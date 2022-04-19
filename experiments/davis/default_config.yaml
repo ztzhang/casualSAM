@@ -1,0 +1,49 @@
+dataset_name: 'davis'
+log_dir: './experiment_logs'
+track_name : 'rollerblade'
+buffer_size : 5
+cache_length: 1000
+optimization_layers: [refinenet1, refinenet2, refinenet3, refinenet4]
+has_gt: False
+joint_iter: 101
+scale_iter: 601
+full_BA_iter : 1803
+uncertainty_lr: 1e-3
+rotation_lr: 1e-3
+translation_lr: 1e-4
+scale_lr : 1e-3
+depth_scale_init: 1e-3
+depth_lr: 1e-4
+intrinsics_lr: 1e-5
+gpu : '0'
+loss_fn: 'cauchy'
+i_print_full_BA: 30
+use_uncertainty : True
+use_inverse_scale: True
+opt_intrinsics: True
+max_width_opt: 400
+max_width: 1024
+has_gt: False
+not_load_mask: True
+depth_regularizer: 'si_weighted'
+depth_reg_weight: 1
+depth_consistency_weight: 1
+cauchy_bias: 0.5
+batch_size: 10
+image_sequence_stride: 1
+uncertainty_consistency_weight: 0
+use_pixel_weight_for_depth_reg: True
+pixel_weight_normalization: True
+pixel_weight_scale: 5
+pixel_weight_bias: 1
+depth_reg_bias: 1e-1
+add_scale_only_BA: False
+add_uncertainty_only_BA: True
+uncertainty_channels: 2
+scale_grid_size: 1
+detach_uncertainty_from_depth_consistency: True
+use_ego_flow_for_disp_consistency: False
+use_pose_init_reg: False
+depth_only_BA: False
+uncertainty_only_iter: 301
+prefix: '{date}/{dataset_name}_dev/{track_name}'
