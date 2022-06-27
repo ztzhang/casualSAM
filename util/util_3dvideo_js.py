@@ -1,7 +1,9 @@
+from ast import Or
 import numpy as np
 from os.path import join
 from skimage.transform import resize as imresize
 from .util_3dvideo import depth_to_points_Rt
+from .jslib import JQUERY, ORBIT_CTR, THREEJS, VIDEO_VIEWER
 
 
 def process_for_pointcloud_video(img, disp, mask, R, t, K, downsample=2, rot_mat=None):
@@ -53,6 +55,37 @@ class PointCloudVideoWebpage():
     camera_geometry_list.push(line_segments);
     '''
 
+    # video3d_template = """
+    # <!DOCTYPE html>
+    # <html>
+    # <head>
+    #     <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+    #     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    #     <meta http-equiv="Pragma" content="no-cache">
+    #     <meta http-equiv="Expires" content="0">
+    #     <title>3D video</title>
+    #     <script src="http://code.jquery.com/jquery-3.6.0.min.js"></script>
+    #     <script src="http://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    #     <script src="http://ztzhang.info/assets/three_js/OrbitControls.js"></script>
+    #     <script src="http://vision38.csail.mit.edu/data/vision/billf/scratch/ztzhang/layered-video/src_code/dev/js_based_3d_video/TrackballControls.js"></script>
+    #     <script>{geometry_string}</script>
+    #     <style>
+    #         #c {{
+    #             position: fixed;
+    #             left: 0px;
+    #             width: 100%;
+    #             height: 100%;
+    #             z-index: -1
+    #         }}
+    #     </style>
+    # </head>
+    # <body>
+    #     <script type="module" src="http://vision38.csail.mit.edu/data/vision/billf/scratch/ztzhang/layered-video/src_code/dev/js_based_3d_video/3d_video_viewer.js"></script>
+    # </body>
+
+    # </html>
+    # """
+
     video3d_template = """
     <!DOCTYPE html>
     <html>
@@ -62,10 +95,9 @@ class PointCloudVideoWebpage():
         <meta http-equiv="Pragma" content="no-cache">
         <meta http-equiv="Expires" content="0">
         <title>3D video</title>
-        <script src="http://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="http://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-        <script src="http://ztzhang.info/assets/three_js/OrbitControls.js"></script>
-        <script src="http://vision38.csail.mit.edu/data/vision/billf/scratch/ztzhang/layered-video/src_code/dev/js_based_3d_video/TrackballControls.js"></script>
+        <script>{jquery}</script>
+        <script>{threejs}</script>
+        <script>{orbit_contrl}</script>
         <script>{geometry_string}</script>
         <style>
             #c {{
@@ -78,7 +110,7 @@ class PointCloudVideoWebpage():
         </style>
     </head>
     <body>
-        <script type="module" src="http://vision38.csail.mit.edu/data/vision/billf/scratch/ztzhang/layered-video/src_code/dev/js_based_3d_video/3d_video_viewer.js"></script>
+        <script>{video_viewer}</script>
     </body>
 
     </html>
@@ -89,6 +121,8 @@ class PointCloudVideoWebpage():
         self.mesh_snippet = self.global_code_template
         self.camera_snippet = ''
         self.camera_registerd = False
+        self.html_args = {'jquery': JQUERY, 'threejs': THREEJS,
+                          'orbit_contrl': ORBIT_CTR, 'video_viewer': VIDEO_VIEWER}
 
     def register_camera_intrinsics(self, H, W, K, viz_depth=0.01):
         coord_x = [0, 0, W-1, W-1]
@@ -132,4 +166,4 @@ class PointCloudVideoWebpage():
             output_path = join(output_path, name)
         with open(output_path, 'w') as f:
             f.write(self.html_template.format(
-                geometry_string=self.mesh_snippet+self.camera_snippet))
+                geometry_string=self.mesh_snippet+self.camera_snippet, **self.html_args))
