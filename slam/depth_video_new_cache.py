@@ -13,7 +13,7 @@ from util.util_colormap import heatmap_to_pseudo_color
 from third_party.raft import load_RAFT, get_input_padder
 from util.util_3dvideo import save_ply, depth_to_points_Rt, Video_3D_Webpage
 from networks.MiDaS import MidasNet, MidasNet_featopt
-from configs import midas_pretrain_path
+from configs import midas_pretrain_path, davis_path
 from networks.goem_opt import _so3_exp_map, CameraPoseDeltaCollection, DepthScaleShiftCollection, DepthBasedWarping, CameraIntrinsics, get_relative_transform
 from skimage.transform import resize as imresize
 from tqdm import tqdm
@@ -543,8 +543,8 @@ class DavisLocalVideoDataset(DepthVideoDataset):
 
     def get_paths(self, opt):
         track_name = opt.track_name
-        data_list_root = "/mnt/localssd1/ztzhang/davis/JPEGImages/Full-Resolution"
-        mask_root = "/mnt/localssd1/ztzhang/davis/Annotations/Full-Resolution"
+        data_list_root = davis_path + '/JPEGImages/Full-Resolution'
+        mask_root = davis_path + '/Annotations/Full-Resolution'
         image_path = join(data_list_root, f'{track_name}')
         self.paths = {'image_path': image_path,
                       'mask_path': join(mask_root, f'{track_name}')}
@@ -649,8 +649,8 @@ class DavisVideoDataset(DepthVideoDataset):
 
     def get_paths(self, opt):
         track_name = opt.track_name
-        data_list_root = "/data/vision/billf/scratch/ztzhang/data/layered-video/DAVIS/JPEGImages/Full-Resolution"
-        mask_root = "/data/vision/billf/scratch/ztzhang/data/layered-video/DAVIS/Annotations/Full-Resolution"
+        data_list_root = davis_path + '/JPEGImages/Full-Resolution'
+        mask_root = davis_path + '/Annotations/Full-Resolution'
         image_path = join(data_list_root, f'{track_name}')
         self.paths = {'image_path': image_path,
                       'mask_path': join(mask_root, f'{track_name}')}
