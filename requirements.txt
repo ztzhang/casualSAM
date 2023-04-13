@@ -1,4 +1,4 @@
-pytorch
+torch
 scikit-image
 pillow
 imageio
